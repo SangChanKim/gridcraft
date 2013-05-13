@@ -39,35 +39,44 @@ public class Player extends Mob{
 	
 	public void act(String description){
 		super.act(description); 
-		
-		switch(description){
-		case "1":
-			changeCurrentItems(0); 
-			break; 
-		case "2":
-			changeCurrentItems(1);
-			break; 
-		case "3":
-			changeCurrentItems(2); 
-			break; 
-		case "4":
-			changeCurrentItems(3); 
-			break; 
-		case "5":
-			changeCurrentItems(4);
-			break;
-		case "6":
-			changeCurrentItems(5);
-			break; 
-		case "7":
-			changeCurrentItems(6); 
-			break; 
-		case "8":
-			changeCurrentItems(7); 
-			break; 
-		case "9": 
-			changeCurrentItems(8); 
-			break; 
+		boolean parsable = true;
+		try{
+			Integer.parseInt(description);
+		}
+		catch(NumberFormatException e){
+			parsable = false;
+		}
+		if (parsable){
+			int descriptionInt = Integer.parseInt(description);
+			switch(descriptionInt){
+			case 1:
+				changeCurrentItems(0); 
+				break; 
+			case 2:
+				changeCurrentItems(1);
+				break; 
+			case 3:
+				changeCurrentItems(2); 
+				break; 
+			case 4:
+				changeCurrentItems(3); 
+				break; 
+			case 5:
+				changeCurrentItems(4);
+				break;
+			case 6:
+				changeCurrentItems(5);
+				break; 
+			case 7:
+				changeCurrentItems(6); 
+				break; 
+			case 8:
+				changeCurrentItems(7); 
+				break; 
+			case 9: 
+				changeCurrentItems(8); 
+				break;
+			}
 		}
 		
 		//N is attacks/mines/gathers resources
