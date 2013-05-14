@@ -8,10 +8,15 @@ import gridcraft.blocks.Block;
 public class Monster extends Mob
 {
   private int detectionRadius=10;
-  public Monster(int r){
-    super();
-    detectionRadius=r;
-  }
+  
+    public Monster(){
+    	super(); 
+    }
+    
+    public Monster(int r){
+        super();
+        detectionRadius=r;
+    }
     public void act()
     {
         if (getGrid() == null)
@@ -45,6 +50,10 @@ public class Monster extends Mob
             if (a instanceof Player)
                 explosion();
         }
+    }
+    
+    public void explosion(){
+    	
     }
     
     public ArrayList<Location> getMoveLocations()

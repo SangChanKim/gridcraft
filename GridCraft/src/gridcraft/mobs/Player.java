@@ -1,6 +1,8 @@
 package gridcraft.mobs;
 
 import gridcraft.blocks.Block;
+import gridcraft.blocks.StoneBlock;
+import gridcraft.blocks.WoodBlock;
 import gridcraft.items.Inventory;
 import gridcraft.items.Item;
 import gridcraft.items.food.Food;
@@ -11,7 +13,7 @@ import info.gridworld.grid.Location;
 public class Player extends Mob{
 	//if item reference variable is null, it should use default values
 	//damage value 
-	private double miningStrength = 10.0;
+	private double miningStrength = 30.0;
 	private int currentPlaceOnInv = 0; 
 	private Inventory inv = new Inventory(); 
 	
@@ -153,7 +155,27 @@ public class Player extends Mob{
 	
 	public void placeBlock(Location loc){
 		System.out.println("Attempting to place blocks..."); 
-		
+		Item i = inv.getItem(currentPlaceOnInv);
+		if(i != null){
+			if(i instanceof Block){
+				Location blockLoc = getLocation().getAdjacentLocation(getDirection());
+				if(getGrid().get(blockLoc) == null && inv.getNumForSlot(currentPlaceOnInv) > 0){
+					if(i instanceof StoneBlock){
+						StoneBlock sb = new StoneBlock();
+						sb.putSelfInGrid(getGrid(), blockLoc);
+					}
+					else if(i instanceof WoodBlock){
+						WoodBlock wb = new WoodBlock();
+						wb.putSelfInGrid(getGrid(), blockLoc);
+					}
+					else{
+						Block b = new Block(100);
+						b.putSelfInGrid(getGrid(), blockLoc); 
+					}
+					inv.setInvNum(currentPlaceOnInv, inv.getNumForSlot(currentPlaceOnInv)-1); 
+				}
+			}
+		}
 	}
 	
 	public void changeCurrentItems(int targetIndex){

@@ -1,9 +1,8 @@
 package gridcraft.mobs;
-import java.util.ArrayList;
-
 import info.gridworld.actor.Actor;
 import info.gridworld.grid.Location;
-import gridcraft.blocks.Block; 
+
+import java.util.ArrayList;
 
 public class Creeper extends Monster
 {
