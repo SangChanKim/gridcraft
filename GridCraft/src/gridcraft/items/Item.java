@@ -1,11 +1,12 @@
 package gridcraft.items;
 
+import gridcraft.Storable;
 import info.gridworld.actor.Actor;
 
 import java.util.ArrayList;
 
 
-public class Item extends Actor {
+public class Item extends Actor implements Storable{
 	private double defaultMiningStrength = 0.0; 
 	private double defaultAttackStrength = 0.0; 
 	
@@ -29,6 +30,11 @@ public class Item extends Actor {
 	
 	public double getDefaultAttackStrength(){
 		return defaultAttackStrength; 
+	}
+
+	@Override
+	public String getType() {
+		return "Default Item";
 	}
 	
 }

@@ -15,6 +15,10 @@ public class Inventory {
 		numInv = new int[9]; 
 	}
 	
+	public int invSize(){
+		return inv.length; 
+	}
+	
 	public int getNumForSlot(int index){
 		return numInv[index];  
 	}
@@ -28,20 +32,48 @@ public class Inventory {
 	}
 	
 	public void addItem(Item item){
+		
+		//NEED FIX
+		//If that item already exists, it should increment the numInv first before creating a new slot in the array
 		for(int i = 0; i < inv.length; i++){
 			if(inv[i] == null){
 				inv[i] = item;
 				numInv[i]++; 
 				break; 
 			}
+			else if(inv[i].getType().equals(item.getType())){
+				if(numInv[i] < 64){
+					numInv[i]++;
+					break;
+				}
+			}
 		}
 	}
 	
 	public void deleteItem(int index){
 		if(index >= 0 && index < inv.length){
-			inv[index] = null; 
-			numInv[index]--; 
+			if(inv[index] != null){
+				if(numInv[index] > 0){
+					numInv[index]--; 
+				}
+				if(numInv[index] <= 0)
+					inv[index] = null; 
+			}
 		}
+	}
+	
+	public String getInventoryInfo(){
+		String info = "Inventory: ( "; 
+		for(int i = 0; i < inv.length; i++){
+			if(inv[i] != null){
+				info += inv[i].getType() + "[" + numInv[i] + "] , ";
+			}
+			else{
+				info += "Empty" + "[" + "null" + "] , ";
+			}
+		}
+		info += " )";
+		return info;
 	}
 	
 }

@@ -2,7 +2,6 @@ package gridcraft.blocks;
 
 import gridcraft.items.Item;
 
-
 public class Block extends Item{
 	
 	private double strength = 100.0; 
@@ -24,6 +23,11 @@ public class Block extends Item{
 	
 	public double getStrength(){
 		return strength; 
+	}
+
+	@Override
+	public String getType() {
+		return "Block"; 
 	}
 	
 }

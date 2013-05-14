@@ -7,14 +7,17 @@ import gridcraft.blocks.Block;
 
 public class Mob extends Actor {
 	
-	private double health = 500.0; 
-	private double damage = 50.0; 
+	protected double health = 0; 
+	protected double damage = 0; 
+	protected double maxHealth = 1000; //always 1000
+	
+	protected double defaultDamage = 50.0; //always 50
 	
 	//create a default mob
 	public Mob(){
 		setColor(null); 
 		health = 500.0; 
-		damage = 50.0; 
+		damage = defaultDamage; 
 	}
 	
 	public Mob(double health, double damage){
@@ -29,17 +32,23 @@ public class Mob extends Actor {
 		}
 	}
 	
+	public double getDefaultDamage(){
+		return defaultDamage;
+	}
+	
 	public void attack(Mob target){
 		target.setHealth(-1*this.getCurrentDamage()); 
 	}
 	
 	
 	public void setHealth(double x0){
-		health += x0; 
-	}
-	
-	public void setDamage(double x0){
-		damage += x0; 
+		double temp = health + x0; 
+		if(temp < maxHealth){
+			health += x0; 
+		}
+		else{
+			System.out.println("I'm already healthy"); 
+		}
 	}
 	
 	public double getHealth(){
@@ -49,6 +58,7 @@ public class Mob extends Actor {
 	public double getCurrentDamage(){
 		return damage; 
 	}
+	
 	
 	public void act(String description){
 		Location loc = null; 

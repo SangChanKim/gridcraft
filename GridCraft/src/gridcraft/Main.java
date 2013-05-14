@@ -19,8 +19,6 @@ public class Main {
 		
 		TreeGeneration[] tg = new TreeGeneration[3]; 
 		Location[] treeLoc = {new Location(10,10), new Location(10, 30), new Location(50, 25)}; 
-		StoneGeneration[] sg = new StoneGeneration[3]; 
-		Location[] stoneLoc = {new Location(0,0), new Location(10, 60), new Location(-10, -10)}; 
 		
 		Player steve = new Player(inv); 
 		OverWorld w = new OverWorld(steve); 
@@ -29,10 +27,6 @@ public class Main {
 		for(int i = 0; i < tg.length; i++){
 			tg[i] = new TreeGeneration();
 			w.add(treeLoc[i], tg[i]);
-		}
-		for(int i = 0; i < sg.length; i++){
-			sg[i] = new StoneGeneration();
-			w.add(stoneLoc[i], sg[i]);
 		}
 		
 		int counter = 0; 
@@ -43,9 +37,6 @@ public class Main {
 		
 		for(int x = 0; x < tg.length; x++){
 			tg[x].removeSelfFromGrid();
-		}
-		for(int x = 0; x < sg.length; x++){
-			sg[x].removeSelfFromGrid(); 
 		}
 		
 		w.add(new Location(10, 10), new StoneBlock());

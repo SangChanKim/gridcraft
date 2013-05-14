@@ -5,15 +5,22 @@ import gridcraft.blocks.StoneBlock;
 import gridcraft.blocks.WoodBlock;
 import gridcraft.items.Inventory;
 import gridcraft.items.Item;
+import gridcraft.items.food.Apple;
 import gridcraft.items.food.Food;
+import gridcraft.items.food.Pork;
+import gridcraft.items.food.ZombieFlesh;
 import info.gridworld.actor.Actor;
 import info.gridworld.grid.Location;
+
+import java.util.ArrayList;
 
 
 public class Player extends Mob{
 	//if item reference variable is null, it should use default values
 	//damage value 
-	private double miningStrength = 30.0;
+	private double miningStrength = 0;
+	private double defaultMiningStrength = 30.0;
+	
 	private int currentPlaceOnInv = 0; 
 	private Inventory inv = new Inventory(); 
 	
@@ -24,19 +31,24 @@ public class Player extends Mob{
 	//health - 1000.0
 	
 	public Player(Inventory i){
-		super(1000.0, 20.0);
-		miningStrength = 10.0;
+		super(10.0, 0);
 		inv = i; 
+		changeCurrentItems(0);
+		//changeToInv(); 
 	}
 	
 	public Player(double health, double damage, double ms, Inventory i){
-		super(health, damage); 
-		miningStrength = ms;
+		super(health, damage);
+		miningStrength = ms; 
 		inv = i; 
 	}
 	
+	public double getMiningStrength(){
+		return miningStrength;
+	}
+	
 	public void act(){
-		
+		inv.getInventoryInfo();
 	}
 	
 	public void act(String description){
@@ -83,12 +95,7 @@ public class Player extends Mob{
 		
 		//N is attacks/mines/gathers resources
 		if(description.equals("N")){
-			int dirFacing =this.getDirection();
-			Location frontLoc = this.getLocation().getAdjacentLocation(dirFacing);
-			Actor actor = this.getGrid().get(frontLoc); 
-			if(actor != null){
-				this.attack();
-			}
+			attack();
 		}
 
 		//M is placing blocks
@@ -100,6 +107,13 @@ public class Player extends Mob{
 				placeBlock(frontLoc); 
 			}
 		}
+		
+		//B is eating
+		if(description.equals("B")){
+			eat(); 
+		}
+		
+		
 	}
 	
 	public void attack(){
@@ -107,29 +121,25 @@ public class Player extends Mob{
 		int dirFacing = this.getDirection();
 		Location frontLoc = this.getLocation().getAdjacentLocation(dirFacing);
 		Actor actor = this.getGrid().get(frontLoc);
-		Item i = inv.getItem(currentPlaceOnInv);
 		
 		double damageToInflict = 0; 
-		if(i != null){
-			if(actor instanceof Mob){
-				damageToInflict = i.getDefaultAttackStrength() + this.getCurrentDamage(); 
-				((Mob) actor).setHealth(-damageToInflict); 
-			}
-			else if(actor instanceof Block){
-				damageToInflict = i.getDefaultMiningStrength() + this.miningStrength;
-				((Block) actor).setStrength(-damageToInflict); 
-			}
-		}
-		else{
+		double currentHealth = 0; 
+		
+		//deal damage according to the instance of actor
+		if(actor != null){
 			if(actor instanceof Mob){
 				damageToInflict = this.getCurrentDamage(); 
 				((Mob) actor).setHealth(-damageToInflict); 
+				currentHealth = ((Mob) actor).getHealth();
 			}
 			else if(actor instanceof Block){
-				damageToInflict = this.miningStrength; 
-				((Block) actor).setStrength(-damageToInflict); 
+				damageToInflict = this.miningStrength;
+				((Block) actor).setStrength(-damageToInflict);
+				currentHealth = ((Block) actor).getStrength();
 			}
 		}
+		
+		//print information out on console
 		if(actor instanceof Mob){
 			System.out.println("Damage inflicted to mob: " + damageToInflict); 
 			System.out.println("Current health of mob: " + ((Mob) actor).getHealth()); 
@@ -139,17 +149,50 @@ public class Player extends Mob{
 			System.out.println("Current strength of block: " + ((Block) actor).getStrength()); 
 		}
 		
+		//loot
+		if(currentHealth <= 0){
+			ArrayList<Item> loot = new ArrayList<Item>(); 
+			if(actor instanceof WoodBlock){
+				loot = ((WoodBlock) actor).loot(); 
+			}
+			else if(actor instanceof StoneBlock){
+				loot = ((StoneBlock) actor).loot(); 
+			}
+			else if(actor instanceof Zombie){
+				loot = ((Zombie) actor).loot(); 
+			}
+			else if(actor instanceof Pig){
+				loot = ((Pig) actor).loot(); 
+			}
+			
+			for(int x = 0; x < loot.size(); x++){
+				inv.addItem(loot.get(x)); 
+			}
+		}
+		
 
 	}
 	
 	public void eat(){
 		System.out.println("Attempting to eat this...."); 
 		Item i = inv.getItem(currentPlaceOnInv); 
-		if(i != null){
-			if(i instanceof Food){
-				double amountOfHealthToPlayer = ((Food) i).getHeartValue();
-				this.setHealth(amountOfHealthToPlayer); 
+		if(i != null && i instanceof Food){
+			
+			double amountOfHealthToPlayer = 0; 
+			if(i instanceof Apple){
+				amountOfHealthToPlayer = ((Apple) i).getHeartValue();
+				
 			}
+			else if(i instanceof Pork){
+				amountOfHealthToPlayer = ((Pork) i).getHeartValue();
+			}
+			else if(i instanceof ZombieFlesh){
+				amountOfHealthToPlayer = ((ZombieFlesh) i).getHeartValue();  
+			}
+			
+		
+			setHealth(amountOfHealthToPlayer); 
+			inv.deleteItem(currentPlaceOnInv);
 		}
 	}
 	
@@ -181,6 +224,19 @@ public class Player extends Mob{
 	public void changeCurrentItems(int targetIndex){
 		System.out.println("changing currentPlaceOnInv to " + targetIndex); 
 		currentPlaceOnInv = targetIndex;
+		
+		double defaultA;
+		double defaultM; 
+		if(inv.getItem(currentPlaceOnInv) != null){
+			defaultA = inv.getItem(currentPlaceOnInv).getDefaultAttackStrength();
+			defaultM = inv.getItem(currentPlaceOnInv).getDefaultMiningStrength();
+		}
+		else{
+			defaultA = this.defaultDamage; 
+			defaultM = this.defaultMiningStrength;
+		}
+		this.miningStrength = defaultM; 
+		this.damage = defaultA; 
 	}
 	
 	

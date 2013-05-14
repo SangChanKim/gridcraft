@@ -27,6 +27,12 @@ public class OverWorld extends ActorWorld {
 		return false;
 	}
 	
+	public void step(){
+		super.step(); 
+		setMessage("Health: " + mainPlayer.getHealth() + " | " + "Damage: " + mainPlayer.getCurrentDamage() + " | " + "Mining Strength: " + 
+		mainPlayer.getMiningStrength() + "\n" + mainPlayer.getInventory().getInventoryInfo());
+	}
+	
 	public void addPlayer(){
 		this.add(mainPlayer);
 	}
