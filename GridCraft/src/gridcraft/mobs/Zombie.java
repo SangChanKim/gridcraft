@@ -8,60 +8,38 @@ import info.gridworld.grid.Location;
 
 import java.util.ArrayList;
 
-public class Zombie extends Mob implements Lootable{
-	
-	
-	public Zombie(){
-		super(750, 30.0); 
-	}
-	
-	
-	public void act(){
-		selectTarget(); 
-		Location nextLoc = selectMoveLocation(getMoveLocations()); 
-		makeMove(nextLoc); 
-	}
-	
-	public void selectTarget(){
-		ArrayList<Actor> neighbors = this.getGrid().getNeighbors(this.getLocation());
-		for(Actor a: neighbors){
-			if(a instanceof Player){
-				this.attack((Player) a);
-			}
-		}
-	}
-	
-	public ArrayList<Location> getMoveLocations(){
-		return this.getGrid().getEmptyAdjacentLocations(this.getLocation());
-	}
-	
-	public Location selectMoveLocation(ArrayList<Location> locs){
-		int n = locs.size(); 
-		if(n == 0)
-			return getLocation(); 
-		int r = (int)(Math.random() * n);
-		return locs.get(r); 
-		
-	}
-	
-	public void makeMove(Location loc){
-		if(loc == null)
-			removeSelfFromGrid(); 
-		else
-			moveTo(loc);
-	}
 
-
-	@Override
-	public ArrayList<Item> loot() {
-		int numOfFlesh = (int) (Math.random()*6);
-		ArrayList<Item> loot = new ArrayList<Item>();
-		
-		for(int i = 0; i < numOfFlesh; i++){
-			loot.add(new ZombieFlesh());
-		}
-		
-		return loot; 
-	}
-	
+public class Zombie extends Monster
+{
+  public Zombie()
+  {
+    super(1000.0, 100.0,10);
+  }
+  
+  public Zombie(int radius)
+  {
+    super(1000.0, 100.0,radius);
+  }
+  
+  public void processActors(ArrayList<Actor> actors)
+  {
+    for (Actor a : actors)
+    {
+      if (a instanceof Player)
+      {
+        attack((Mob)a);
+      }
+    }
+  }
+  
+  public ArrayList<Item> loot() {
+    int numOfFlesh = (int) (Math.random()*6);
+    ArrayList<Item> loot = new ArrayList<Item>();
+    
+    for(int i = 0; i < numOfFlesh; i++){
+      loot.add(new ZombieFlesh());
+    }
+    
+    return loot; 
+  }
 }

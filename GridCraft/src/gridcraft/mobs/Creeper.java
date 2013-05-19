@@ -1,66 +1,59 @@
 package gridcraft.mobs;
-import info.gridworld.actor.Actor;
-import info.gridworld.grid.Location;
-
 import java.util.ArrayList;
+
+import gridcraft.Explosion; 
+import info.gridworld.actor.Actor;
+import info.gridworld.grid.*;
+import gridcraft.blocks.*; 
 
 public class Creeper extends Monster
 {
-    public void act()
+  private boolean remove;
+  
+  public Creeper()
+  {
+    super(1000.0,0.0,10);
+  }
+  
+  public Creeper(int radius)
+  {
+    super(1000.0,0.0,radius);
+  }
+  
+  public void processActors(ArrayList<Actor> actors)
+  {
+    for (Actor a : actors)
     {
-        if (getGrid() == null)
-            return;
-        ArrayList<Actor> actors = getActors();
-        processActors(actors);
-        ArrayList<Location> moveLocs = getMoveLocations();
-        Location loc = selectMoveLocation(moveLocs);
-        makeMove(loc);
-    }
-
-    public ArrayList<Actor> getActors()
-    {
-        return getGrid().getNeighbors(getLocation());
-    }
-
-    public void processActors(ArrayList<Actor> actors)
-    {
-        for (Actor a : actors)
-        {
-            if (a instanceof Player)
-                explosion();
-        }
-    }
-    
-    public void explosion()
-    {
-      int row=getLocation().getRow();
-      int col=getLocation().getCol();
-      for (int r=row-1;r<=row+1;r++)
+      if (a instanceof Player)
       {
-        for (int c=col-1;c<=col+1;c++)
+        explosion();
+        remove=true;
+      }
+    }
+  }
+  
+  public void explosion()
+  {
+    int row=getLocation().getRow();
+    int col=getLocation().getCol();
+    int n=0;
+    for (int r=row-1;r<=row+1;r++)
+    {
+      for (int c=col-1;c<=col+1;c++)
+      {
+        n++;
+        if (n!=5)
         {
-          
+          getGrid().remove(new Location(r,c));
+          new Explosion().putSelfInGrid(getGrid(),new Location(r,c));
         }
       }
     }
-    
-    public ArrayList<Location> getMoveLocations()
+  }
+  
+  public void makeMove(Location loc)
     {
-        return getGrid().getEmptyAdjacentLocations(getLocation());
-    }
-
-    public Location selectMoveLocation(ArrayList<Location> locs)
-    {
-        int n = locs.size();
-        if (n == 0)
-            return getLocation();
-        int r = (int) (Math.random() * n);
-        return locs.get(r);
-    }
-
-    public void makeMove(Location loc)
-    {
-        if (loc == null)
+        if (loc == null || remove)
             removeSelfFromGrid();
         else
             moveTo(loc);
