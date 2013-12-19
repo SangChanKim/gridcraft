@@ -11,4 +11,6 @@ Features
 - AI system (pigs, zombie, creeper, enderman)
 - Inventory system
 - Food (apple, pork, zombie flesh)
-- Weapons (sword, pickaxe) 
+- Weapons (sword, pickaxe)
+- Multiplayer support
+- Server hosting support (Server.java) 
