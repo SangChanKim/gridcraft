@@ -1,13 +1,11 @@
 GridCraft
 =========
-
-GridCraft is simply a clone of Minecraft using the GridWorld API.
-This was an end-of-the-year school project. 
+GridCraft is a GridWorld clone of Minecraft.
+Completed for an end-of-the-year school project for AP CS.
 
 Features
-=========
-- Random tree and ore generation
-- AI system (pigs, zombie, creeper, enderman)
-- Inventory feature 
-- Food and weapons
-- Multiplayer and Server files soon!
+* Random tree and ore generation
+* Very primitive AI (pigs, zombie, creeper, enderman)
+* Inventory system 
+* Food
+* Weapons
